@@ -302,6 +302,7 @@ export default function ProfilePage() {
                               <Image
                                 src={design.image || "/placeholder.svg"}
                                 alt={design.name}
+                                fill
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               />
                             </div>
@@ -340,6 +341,7 @@ export default function ProfilePage() {
                               <Image
                                 src={product.image || "/placeholder.svg"}
                                 alt={product.name}
+                                fill
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               />
                             </div>

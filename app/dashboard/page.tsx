@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/auth-context"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -179,9 +180,11 @@ export default function DashboardPage() {
                 {recentDesigns.map((design) => (
                   <div key={design.id} className="flex items-center gap-3">
                     <div className="h-12 w-12 bg-muted rounded-lg overflow-hidden">
-                      <img
+                      <Image
                         src={design.image || "/placeholder.svg"}
                         alt={design.name}
+                        width={48}
+                        height={48}
                         className="w-full h-full object-cover"
                       />
                     </div>

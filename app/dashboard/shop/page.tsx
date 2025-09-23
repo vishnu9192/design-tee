@@ -76,6 +76,7 @@ export default function ShopPage() {
                     <Image
                       src={category.image || "/placeholder.svg"}
                       alt={category.name}
+                      fill
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <Badge className="absolute top-4 right-4 bg-primary text-primary-foreground">
@@ -108,6 +109,7 @@ export default function ShopPage() {
                     <Image
                       src={`/stylish-t-shirt-design-.jpg?height=300&width=300&query=stylish t-shirt design ${item}`}
                       alt={`Featured Product ${item}`}
+                      fill
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>

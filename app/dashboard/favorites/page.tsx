@@ -146,6 +146,8 @@ export default function FavoritesPage() {
                     <Image
                       src={item.image || "/placeholder.svg"}
                       alt={item.name}
+                      width={300}
+                      height={256}
                       className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <Button
@@ -211,6 +213,8 @@ export default function FavoritesPage() {
                       <Image
                         src={item.image || "/placeholder.svg"}
                         alt={item.name}
+                        width={96}
+                        height={96}
                         className="w-24 h-24 object-cover rounded-lg"
                       />
                       <div className="flex-1 space-y-2">

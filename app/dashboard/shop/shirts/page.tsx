@@ -83,6 +83,7 @@ export default function ShirtsPage() {
                     <Image
                       src={shirt.image || "/placeholder.svg"}
                       alt={shirt.name}
+                      fill
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <Button
