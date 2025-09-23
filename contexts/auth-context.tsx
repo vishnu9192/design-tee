@@ -2,6 +2,16 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { 
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  updateProfile,
+  type User as FirebaseUser 
+} from "firebase/auth"
+import { doc, setDoc, getDoc } from "firebase/firestore"
+import { auth, db } from "@/lib/firebase"
 
 interface User {
   id: string
@@ -9,6 +19,13 @@ interface User {
   lastName: string
   email: string
   avatar?: string
+}
+
+interface UserProfile {
+  firstName: string
+  lastName: string
+  avatar?: string
+  createdAt: Date
 }
 
 interface SignupData {
@@ -33,35 +50,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
-  // Check for existing session on mount
+  // Listen to Firebase auth state changes
   useEffect(() => {
-    const savedUser = localStorage.getItem("user")
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
-    }
-    setIsLoading(false)
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Get user profile from Firestore
+        try {
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
+          const userProfile = userDoc.data() as UserProfile | undefined
+          
+          setUser({
+            id: firebaseUser.uid,
+            firstName: userProfile?.firstName || firebaseUser.displayName?.split(' ')[0] || '',
+            lastName: userProfile?.lastName || firebaseUser.displayName?.split(' ')[1] || '',
+            email: firebaseUser.email || '',
+            avatar: userProfile?.avatar || firebaseUser.photoURL || undefined,
+          })
+        } catch (error) {
+          console.error('Error fetching user profile:', error)
+          setUser({
+            id: firebaseUser.uid,
+            firstName: firebaseUser.displayName?.split(' ')[0] || '',
+            lastName: firebaseUser.displayName?.split(' ')[1] || '',
+            email: firebaseUser.email || '',
+            avatar: firebaseUser.photoURL || undefined,
+          })
+        }
+      } else {
+        setUser(null)
+      }
+      setIsLoading(false)
+    })
+
+    return () => unsubscribe()
   }, [])
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true)
-
-      // Simulate API call - replace with real authentication
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Mock user data - replace with real API response
-      const userData: User = {
-        id: "1",
-        firstName: "John",
-        lastName: "Doe",
-        email: email,
-        avatar: "/diverse-user-avatars.png",
-      }
-
-      setUser(userData)
-      localStorage.setItem("user", JSON.stringify(userData))
-
+      await signInWithEmailAndPassword(auth, email, password)
       router.push("/dashboard")
       return true
     } catch (error) {
@@ -75,19 +103,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (userData: SignupData): Promise<boolean> => {
     try {
       setIsLoading(true)
+      
+      // Create Firebase user
+      const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password)
+      const firebaseUser = userCredential.user
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // Update display name
+      await updateProfile(firebaseUser, {
+        displayName: `${userData.firstName} ${userData.lastName}`
+      })
 
-      const newUser: User = {
-        id: Date.now().toString(),
+      // Save additional user data to Firestore
+      await setDoc(doc(db, 'users', firebaseUser.uid), {
         firstName: userData.firstName,
         lastName: userData.lastName,
-        email: userData.email,
-      }
-
-      setUser(newUser)
-      localStorage.setItem("user", JSON.stringify(newUser))
+        createdAt: new Date()
+      } as UserProfile)
 
       router.push("/dashboard")
       return true
@@ -99,10 +130,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem("user")
-    router.push("/")
+  const logout = async () => {
+    try {
+      await signOut(auth)
+      router.push("/")
+    } catch (error) {
+      console.error("Logout error:", error)
+    }
   }
 
   return (
