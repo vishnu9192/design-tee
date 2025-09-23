@@ -219,6 +219,61 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
+        {/* Preferences Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Preferences
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="theme">Theme</Label>
+                <select
+                  id="theme"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={preferences.theme}
+                  onChange={(e) => setPreferences({ ...preferences, theme: e.target.value })}
+                >
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                  <option value="system">System</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="language">Language</Label>
+                <select
+                  id="language"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={preferences.language}
+                  onChange={(e) => setPreferences({ ...preferences, language: e.target.value })}
+                >
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="currency">Currency</Label>
+                <select
+                  id="currency"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={preferences.currency}
+                  onChange={(e) => setPreferences({ ...preferences, currency: e.target.value })}
+                >
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="CAD">CAD (C$)</option>
+                </select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Security Settings */}
         <Card>
           <CardHeader>
