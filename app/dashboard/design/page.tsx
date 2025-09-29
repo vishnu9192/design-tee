@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,7 +14,6 @@ import { Badge } from "@/components/ui/badge"
 import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
-  ArrowLeft,
   Palette,
   Type,
   Sparkles,
@@ -29,18 +29,19 @@ import {
   Zap,
 } from "lucide-react"
 
+type DesignElement = {
+  id: number
+  type: string
+  content: string
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
 export default function DesignStudioPage() {
   const [selectedProduct, setSelectedProduct] = useState("tshirt")
   const [selectedColor, setSelectedColor] = useState("white")
-  type DesignElement = {
-    id: number
-    type: string
-    content: string
-    x: number
-    y: number
-    width: number
-    height: number
-  }
   const [designElements, setDesignElements] = useState<DesignElement[]>([])
   const [aiPrompt, setAiPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
@@ -87,53 +88,64 @@ export default function DesignStudioPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      {/* Design Tools Header */}
+      <div className="border-b border-border bg-card/50">
+        <div className="container mx-auto px-4 py-2 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/shop">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Shop
-              </Link>
-            </Button>
+            <div className="flex space-x-1">
+              <Button variant="ghost" size="icon" className="size-9">
+                <Sparkles className="h-[1.2rem] w-[1.2rem]" />
+              </Button>
+              <Button variant="ghost" size="icon" className="size-9">
+                <Square className="h-[1.2rem] w-[1.2rem]" />
+              </Button>
+              <Button variant="ghost" size="icon" className="size-9">
+                <Type className="h-[1.2rem] w-[1.2rem]" />
+              </Button>
+              <Button variant="ghost" size="icon" className="size-9">
+                <Circle className="h-[1.2rem] w-[1.2rem]" />
+              </Button>
+            </div>
+            <div className="flex items-center gap-2 ml-4">
+              <Button variant="ghost" size="icon" className="size-9">
+                <Undo className="h-[1.2rem] w-[1.2rem]" />
+              </Button>
+              <Button variant="ghost" size="icon" className="size-9">
+                <Redo className="h-[1.2rem] w-[1.2rem]" />
+              </Button>
+              <Button variant="ghost" size="icon" className="size-9">
+                <RotateCcw className="h-[1.2rem] w-[1.2rem]" />
+              </Button>
+            </div>
             <div className="flex items-center gap-2">
-              <Palette className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-bold text-foreground">Design Studio</h1>
+              <span className="text-sm text-muted-foreground">Zoom:</span>
+              <Button variant="outline" size="sm">100%</Button>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="bg-transparent">
+            <Button variant="outline" size="sm">
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
-            <Button size="sm">
+            <Button variant="default" size="sm">
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
           </div>
         </div>
-      </header>
+      </div>
 
-      <div className="flex h-[calc(100vh-73px)]">
+      <div className="flex h-[calc(100vh-64px)]">
         {/* Left Sidebar - Tools */}
         <div className="w-80 border-r border-border bg-card/30 overflow-y-auto">
           <Tabs defaultValue="ai" className="p-4">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="ai" className="text-xs">
-                <Sparkles className="h-4 w-4" />
-              </TabsTrigger>
-              <TabsTrigger value="templates" className="text-xs">
-                <Square className="h-4 w-4" />
-              </TabsTrigger>
-              <TabsTrigger value="text" className="text-xs">
-                <Type className="h-4 w-4" />
-              </TabsTrigger>
-              <TabsTrigger value="shapes" className="text-xs">
-                <Circle className="h-4 w-4" />
-              </TabsTrigger>
+              <TabsTrigger value="ai">AI</TabsTrigger>
+              <TabsTrigger value="templates">Templates</TabsTrigger>
+              <TabsTrigger value="text">Text</TabsTrigger>
+              <TabsTrigger value="shapes">Shapes</TabsTrigger>
             </TabsList>
-
+            
             {/* AI Generator Tab */}
             <TabsContent value="ai" className="space-y-4">
               <Card>
@@ -184,10 +196,11 @@ export default function DesignStudioPage() {
                       <CardContent className="p-0">
                         <div className="aspect-square bg-muted/50 relative overflow-hidden">
                           <Image
-                            src={template.image || "/placeholder.svg"}
+                            src={template.image}
                             alt={template.name}
                             fill
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           />
                         </div>
                         <div className="p-2">
@@ -287,7 +300,7 @@ export default function DesignStudioPage() {
 
           {/* Canvas Area */}
           <div className="flex-1 bg-muted/20 flex items-center justify-center p-8">
-            <div className="relative">
+            <div className="relative bg-white rounded-lg shadow-sm overflow-hidden">
               {/* Product Preview */}
               <div className="w-96 h-96 relative">
                 <Image
@@ -300,10 +313,12 @@ export default function DesignStudioPage() {
                           : "/blue-t-shirt.png"
                       : "/white-button-shirt.png"
                   }
-                  alt="Product"
+                  alt="Product preview"
                   width={384}
                   height={384}
                   className="w-full h-full object-contain"
+                  sizes="384px"
+                  priority
                 />
                 {/* Design Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -330,17 +345,15 @@ export default function DesignStudioPage() {
 
         {/* Right Sidebar - Properties */}
         <div className="w-80 border-l border-border bg-card/30 overflow-y-auto">
-          <div className="p-4 space-y-6">
-            {/* Product Selection */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Product</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          <div className="p-4 space-y-4">
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold">Product</h2>
+              
+              <div className="space-y-4">
                 <div>
                   <Label>Product Type</Label>
                   <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -349,6 +362,7 @@ export default function DesignStudioPage() {
                     </SelectContent>
                   </Select>
                 </div>
+                
                 <div>
                   <Label>Color</Label>
                   <div className="grid grid-cols-3 gap-2 mt-2">
@@ -356,11 +370,12 @@ export default function DesignStudioPage() {
                       <button
                         key={color.value}
                         onClick={() => setSelectedColor(color.value)}
-                        className={`w-full h-10 rounded-md border-2 flex items-center justify-center text-xs font-medium transition-all ${
+                        className={cn(
+                          "w-full h-10 rounded-md border-2 flex items-center justify-center text-xs font-medium transition-all",
                           selectedColor === color.value
                             ? "border-primary ring-2 ring-primary/20"
                             : "border-border hover:border-primary/50"
-                        }`}
+                        )}
                         style={{ backgroundColor: color.hex }}
                       >
                         <span className={color.value === "white" ? "text-black" : "text-white"}>{color.name}</span>
@@ -368,55 +383,47 @@ export default function DesignStudioPage() {
                     ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            {/* Design Properties */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Design Properties</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <div className="space-y-4 mt-6">
+              <h2 className="text-lg font-semibold">Design Properties</h2>
+              
+              <div className="space-y-4">
                 <div>
                   <Label>Position</Label>
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     <div>
-                      <Label htmlFor="pos-x" className="text-xs">
-                        X
-                      </Label>
+                      <Label htmlFor="pos-x" className="text-xs">X</Label>
                       <Input id="pos-x" type="number" defaultValue="0" />
                     </div>
                     <div>
-                      <Label htmlFor="pos-y" className="text-xs">
-                        Y
-                      </Label>
+                      <Label htmlFor="pos-y" className="text-xs">Y</Label>
                       <Input id="pos-y" type="number" defaultValue="0" />
                     </div>
                   </div>
                 </div>
+                
                 <div>
                   <Label>Size</Label>
                   <div className="grid grid-cols-2 gap-2 mt-2">
                     <div>
-                      <Label htmlFor="width" className="text-xs">
-                        Width
-                      </Label>
+                      <Label htmlFor="width" className="text-xs">Width</Label>
                       <Input id="width" type="number" defaultValue="200" />
                     </div>
                     <div>
-                      <Label htmlFor="height" className="text-xs">
-                        Height
-                      </Label>
+                      <Label htmlFor="height" className="text-xs">Height</Label>
                       <Input id="height" type="number" defaultValue="200" />
                     </div>
                   </div>
                 </div>
+                
                 <div>
                   <Label>Rotation</Label>
                   <Slider defaultValue={[0]} max={360} min={0} step={1} className="mt-2" />
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Actions */}
             <Card>

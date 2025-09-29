@@ -67,14 +67,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             avatar: userProfile?.avatar || firebaseUser.photoURL || undefined,
           })
         } catch (error) {
-          console.error('Error fetching user profile:', error)
+          // Check if error is due to being offline
+          if (error instanceof Error && error.message.includes('offline')) {
+            console.warn('Currently offline, using cached user data if available');
+          } else {
+            console.error('Error fetching user profile:', error);
+          }
+          // Fall back to cached auth data in either case
           setUser({
             id: firebaseUser.uid,
             firstName: firebaseUser.displayName?.split(' ')[0] || '',
             lastName: firebaseUser.displayName?.split(' ')[1] || '',
             email: firebaseUser.email || '',
             avatar: firebaseUser.photoURL || undefined,
-          })
+          });
         }
       } else {
         setUser(null)

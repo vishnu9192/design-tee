@@ -57,11 +57,6 @@ export default function SettingsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
-        <p className="text-muted-foreground">Manage your account settings and preferences</p>
-      </div>
-
       <div className="space-y-8">
         {/* Profile Settings */}
         <Card>
@@ -233,6 +228,8 @@ export default function SettingsPage() {
                 <Label htmlFor="theme">Theme</Label>
                 <select
                   id="theme"
+                  title="Theme"
+                  aria-label="Theme selection"
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={preferences.theme}
                   onChange={(e) => setPreferences({ ...preferences, theme: e.target.value })}
@@ -246,6 +243,7 @@ export default function SettingsPage() {
                 <Label htmlFor="language">Language</Label>
                 <select
                   id="language"
+                  title="Language selection"
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={preferences.language}
                   onChange={(e) => setPreferences({ ...preferences, language: e.target.value })}
@@ -260,6 +258,7 @@ export default function SettingsPage() {
                 <Label htmlFor="currency">Currency</Label>
                 <select
                   id="currency"
+                  aria-label="Currency selection"
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={preferences.currency}
                   onChange={(e) => setPreferences({ ...preferences, currency: e.target.value })}

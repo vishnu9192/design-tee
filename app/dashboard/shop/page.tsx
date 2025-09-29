@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Shirt, ArrowLeft, Filter, Grid3X3, List } from "lucide-react"
+import { Filter, Grid3X3, List } from "lucide-react"
 import Image from "next/image"
 
 const categories = [
@@ -25,35 +25,19 @@ const categories = [
 export default function ShopPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
-              </Link>
-            </Button>
-            <div className="flex items-center gap-2">
-              <Shirt className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-bold text-foreground">Shop</h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="bg-transparent">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="ghost" size="sm">
-              <Grid3X3 className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="sm">
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Filter Bar */}
+      <div className="container mx-auto px-4 py-4 flex items-center justify-end gap-2">
+        <Button variant="outline" size="sm" className="bg-transparent">
+          <Filter className="h-4 w-4 mr-2" />
+          Filter
+        </Button>
+        <Button variant="ghost" size="sm">
+          <Grid3X3 className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="sm">
+          <List className="h-4 w-4" />
+        </Button>
+      </div>
 
       {/* Hero Section */}
       <section className="py-12 px-4 bg-muted/30">

@@ -10,66 +10,12 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ShoppingCart, Plus, Minus, Trash2, Heart, CreditCard, Truck, Shield, Tag } from "lucide-react"
-
-interface CartItem {
-  id: string
-  name: string
-  image: string
-  price: number
-  quantity: number
-  size: string
-  color: string
-  design?: string
-  customDesign?: boolean
-}
+import { useCart } from "@/contexts/cart-context"
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      name: "Custom T-Shirt",
-      image: "/white-t-shirt.png",
-      price: 29.99,
-      quantity: 2,
-      size: "M",
-      color: "White",
-      design: "AI Generated Sunset",
-      customDesign: true,
-    },
-    {
-      id: "2",
-      name: "Classic T-Shirt",
-      image: "/black-t-shirt.png",
-      price: 24.99,
-      quantity: 1,
-      size: "L",
-      color: "Black",
-    },
-    {
-      id: "3",
-      name: "Button Shirt",
-      image: "/white-button-shirt.png",
-      price: 39.99,
-      quantity: 1,
-      size: "M",
-      color: "White",
-    },
-  ])
-
+  const { items: cartItems, updateQuantity, removeItem, getSubtotal, getTotal } = useCart()
   const [promoCode, setPromoCode] = useState("")
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null)
-
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity === 0) {
-      setCartItems(cartItems.filter((item) => item.id !== id))
-    } else {
-      setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)))
-    }
-  }
-
-  const removeItem = (id: string) => {
-    setCartItems(cartItems.filter((item) => item.id !== id))
-  }
 
   const applyPromoCode = () => {
     if (promoCode.toLowerCase() === "save10") {
@@ -78,7 +24,7 @@ export default function CartPage() {
     }
   }
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const subtotal = getSubtotal()
   const discount = appliedPromo === "SAVE10" ? subtotal * 0.1 : 0
   const shipping = subtotal > 50 ? 0 : 5.99
   const tax = (subtotal - discount) * 0.08
@@ -91,7 +37,7 @@ export default function CartPage() {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm" asChild>
-              <Link href="/shop">
+              <Link href="/dashboard/shop">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Continue Shopping
               </Link>
@@ -116,7 +62,7 @@ export default function CartPage() {
                 <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
                 <p className="text-muted-foreground mb-6">Add some amazing t-shirts to get started!</p>
                 <Button asChild>
-                  <Link href="/shop">Start Shopping</Link>
+                  <Link href="/dashboard/shop">Start Shopping</Link>
                 </Button>
               </div>
             </CardContent>
@@ -273,14 +219,14 @@ export default function CartPage() {
                   </div>
 
                   <Button className="w-full" size="lg" asChild>
-                    <Link href="/checkout">
+                    <Link href="/dashboard/checkout">
                       <CreditCard className="h-4 w-4 mr-2" />
                       Proceed to Checkout
                     </Link>
                   </Button>
 
                   <Button variant="outline" className="w-full bg-transparent" asChild>
-                    <Link href="/shop">Continue Shopping</Link>
+                    <Link href="/dashboard/shop">Continue Shopping</Link>
                   </Button>
                 </CardContent>
               </Card>
