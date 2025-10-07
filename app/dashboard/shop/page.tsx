@@ -71,7 +71,7 @@ export default function ShopPage() {
                     <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
                     <p className="text-muted-foreground mb-4">{category.description}</p>
                     <Button asChild className="w-full">
-                      <Link href={`/shop/${category.id}`}>Browse {category.name}</Link>
+                      <Link href={`/dashboard/shop/${category.id}`}>Browse {category.name}</Link>
                     </Button>
                   </div>
                 </CardContent>

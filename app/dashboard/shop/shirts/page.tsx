@@ -48,7 +48,7 @@ export default function ShirtsPage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/dashboard/shop">
+                                <Link href="/dashboard/shop">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Shop
                 </Link>
@@ -111,7 +111,7 @@ export default function ShirtsPage() {
                       <span className="font-bold text-lg">${shirt.price}</span>
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" className="bg-transparent" asChild>
-                          <Link href={`/dashboard/design?product=shirt&id=${shirt.id}`}>Design</Link>
+                          <Link href={`/dashboard/design/ai?product=shirt&id=${shirt.id}`}>Design</Link>
                         </Button>
                         <Button 
                         size="sm" 

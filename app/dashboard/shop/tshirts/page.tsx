@@ -105,7 +105,7 @@ export default function TShirtsPage() {
                       <span className="font-bold text-lg">${tshirt.price}</span>
                       <div className="flex gap-2">
                         <Button size="sm" variant="outline" className="bg-transparent" asChild>
-                          <Link href={`/dashboard/design?product=tshirt&id=${tshirt.id}`}>Design</Link>
+                          <Link href={`/dashboard/design/ai?product=tshirt&id=${tshirt.id}`}>Design</Link>
                         </Button>
                         <Button 
                         size="sm" 

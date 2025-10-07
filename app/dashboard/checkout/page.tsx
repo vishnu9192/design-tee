@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useAuth } from "@/contexts/auth-context"
+import { useCart } from "@/contexts/cart-context"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,10 +17,13 @@ import { ArrowLeft, CreditCard, Truck, MapPin, User, Mail, Lock, CheckCircle, Pa
 
 export default function CheckoutPage() {
   const [step, setStep] = useState(1)
+  const { user } = useAuth()
+  const { items: cartItems, getSubtotal, getTotal } = useCart()
+  
   const [formData, setFormData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
+    email: user?.email || "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
     address: "",
     city: "",
     state: "",
@@ -30,32 +35,10 @@ export default function CheckoutPage() {
     nameOnCard: "",
   })
 
-  const orderItems = [
-    {
-      id: "1",
-      name: "Custom T-Shirt",
-      image: "/white-t-shirt.png",
-      price: 29.99,
-      quantity: 2,
-      size: "M",
-      color: "White",
-      design: "AI Generated Sunset",
-    },
-    {
-      id: "2",
-      name: "Classic T-Shirt",
-      image: "/black-t-shirt.png",
-      price: 24.99,
-      quantity: 1,
-      size: "L",
-      color: "Black",
-    },
-  ]
-
-  const subtotal: number = 84.97
-  const shipping: number = 0
-  const tax: number = 6.8
-  const total: number = 91.77
+  const subtotal = getSubtotal()
+  const shipping = subtotal > 50 ? 0 : 5.99
+  const tax = subtotal * 0.08
+  const total = getTotal()
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -343,7 +326,7 @@ export default function CheckoutPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
-                    {orderItems.map((item) => (
+                    {cartItems.map((item) => (
                       <div key={item.id} className="flex gap-3">
                         <div className="w-16 h-16 bg-muted/50 rounded-lg overflow-hidden flex-shrink-0">
                           <Image
