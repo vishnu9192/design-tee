@@ -13,7 +13,7 @@ import { ArrowLeft, ShoppingCart, Plus, Minus, Trash2, Heart, CreditCard, Truck,
 import { useCart } from "@/contexts/cart-context"
 
 export default function CartPage() {
-  const { items: cartItems, updateQuantity, removeItem, getSubtotal, getTotal } = useCart()
+  const { items: cartItems, updateQuantity, removeItem, getSubtotal} = useCart()
   const [promoCode, setPromoCode] = useState("")
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null)
 
