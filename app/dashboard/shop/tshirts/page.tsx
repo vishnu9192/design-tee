@@ -2,12 +2,14 @@
 
 import { useState } from "react"
 import { useCart } from "@/contexts/cart-context"
+import { useTracking } from "@/contexts/tracking-context"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Heart, ShoppingCart } from "lucide-react"
+import { PersonalizedRecommendations, TrendingProducts } from "@/components/recommendations"
 import Image from "next/image"
 
 const tshirts = [
@@ -29,9 +31,28 @@ export default function TShirtsPage() {
   const [sortBy, setSortBy] = useState("featured")
   const [favorites, setFavorites] = useState<number[]>([])
   const { addItem } = useCart()
+  const { trackView, trackLike, trackAddToCart } = useTracking()
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) => (prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]))
+    trackLike(id.toString())
+  }
+
+  const handleAddToCart = (tshirt: typeof tshirts[0]) => {
+    addItem({
+      id: tshirt.id.toString(),
+      name: tshirt.name,
+      image: tshirt.image,
+      price: tshirt.price,
+      size: "M", // Default size
+      color: tshirt.color,
+      productType: "tshirt"
+    })
+    trackAddToCart(tshirt.id.toString())
+  }
+
+  const handleProductView = (id: number) => {
+    trackView(id.toString())
   }
 
   return (
@@ -73,7 +94,11 @@ export default function TShirtsPage() {
         <div className="container mx-auto">
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {tshirts.map((tshirt) => (
-              <Card key={tshirt.id} className="group hover:shadow-lg transition-all duration-300">
+              <Card 
+                key={tshirt.id} 
+                className="group hover:shadow-lg transition-all duration-300 cursor-pointer"
+                onClick={() => handleProductView(tshirt.id)}
+              >
                 <CardContent className="p-0">
                   <div className="aspect-square bg-muted/50 relative overflow-hidden">
                     <Image
@@ -86,7 +111,10 @@ export default function TShirtsPage() {
                       variant="ghost"
                       size="sm"
                       className="absolute top-2 right-2 h-8 w-8 p-0 bg-background/80 backdrop-blur-sm hover:bg-background"
-                      onClick={() => toggleFavorite(tshirt.id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleFavorite(tshirt.id)
+                      }}
                     >
                       <Heart
                         className={`h-4 w-4 ${
@@ -108,19 +136,14 @@ export default function TShirtsPage() {
                           <Link href={`/dashboard/design/ai?product=tshirt&id=${tshirt.id}`}>Design</Link>
                         </Button>
                         <Button 
-                        size="sm" 
-                        onClick={() => addItem({
-                          id: tshirt.id.toString(),
-                          name: tshirt.name,
-                          image: tshirt.image,
-                          price: tshirt.price,
-                          size: "M", // Default size
-                          color: tshirt.color,
-                          productType: "tshirt"
-                        })}
-                      >
+                          size="sm" 
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleAddToCart(tshirt)
+                          }}
+                        >
                           <ShoppingCart className="h-4 w-4" />
-                      </Button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -128,6 +151,14 @@ export default function TShirtsPage() {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Recommendations Section */}
+      <section className="py-8 px-4 bg-muted/30">
+        <div className="container mx-auto space-y-12">
+          <PersonalizedRecommendations category="tshirt" limit={5} />
+          <TrendingProducts category="tshirt" limit={5} />
         </div>
       </section>
     </div>

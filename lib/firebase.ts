@@ -1,9 +1,13 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  FacebookAuthProvider,
+  OAuthProvider 
+} from "firebase/auth";
+import { enableIndexedDbPersistence, initializeFirestore, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { getAnalytics, isSupported } from "firebase/analytics";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -19,28 +23,51 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Initialize Firebase services
+// Initialize Firebase services with optimizations
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+
+// Initialize Firestore with better cache settings
+export const db = initializeFirestore(app, {
+  cacheSizeBytes: CACHE_SIZE_UNLIMITED,
+  ignoreUndefinedProperties: true
+});
+
 export const storage = getStorage(app);
 
-// Enable offline persistence
+// Configure social auth providers
+export const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('profile');
+googleProvider.addScope('email');
+
+export const facebookProvider = new FacebookAuthProvider();
+facebookProvider.addScope('email');
+facebookProvider.addScope('public_profile');
+
+// Instagram uses Facebook provider with Instagram configuration
+export const instagramProvider = new OAuthProvider('instagram.com');
+
+// Enable offline persistence only once
 if (typeof window !== "undefined") {
-  // Enable Firestore offline persistence
-  enableIndexedDbPersistence(db)
+  let persistenceEnabled = false;
+  
+  if (!persistenceEnabled) {
+    enableIndexedDbPersistence(db, {
+      forceOwnership: false
+    })
+    .then(() => {
+      persistenceEnabled = true;
+      console.log('Firebase persistence enabled');
+    })
     .catch((err: { code: string }) => {
       if (err.code === 'failed-precondition') {
-        // Multiple tabs open, persistence can only be enabled in one tab at a time
         console.warn('Multiple tabs open, persistence can only be enabled in one tab at a time');
       } else if (err.code === 'unimplemented') {
-        // The current browser doesn't support persistence
         console.warn('The current browser doesn\'t support persistence');
+      } else {
+        console.warn('Failed to enable persistence:', err);
       }
     });
+  }
 }
-
-// Initialize Analytics (only on client side)
-export const analytics = typeof window !== "undefined" ? 
-  isSupported().then(yes => yes ? getAnalytics(app) : null) : null;
 
 export default app;

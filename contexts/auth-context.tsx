@@ -8,10 +8,10 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  type User as FirebaseUser 
+  signInWithPopup,
 } from "firebase/auth"
 import { doc, setDoc, getDoc } from "firebase/firestore"
-import { auth, db } from "@/lib/firebase"
+import { auth, db, googleProvider, facebookProvider, instagramProvider } from "@/lib/firebase"
 
 interface User {
   id: string
@@ -39,6 +39,9 @@ interface AuthContextType {
   user: User | null
   login: (email: string, password: string) => Promise<boolean>
   signup: (userData: SignupData) => Promise<boolean>
+  loginWithGoogle: () => Promise<boolean>
+  loginWithFacebook: () => Promise<boolean>
+  loginWithInstagram: () => Promise<boolean>
   logout: () => void
   isLoading: boolean
 }
@@ -53,50 +56,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Listen to Firebase auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setIsLoading(true)
+      
       if (firebaseUser) {
-        // Get user profile from Firestore
+        // Use cached data first for immediate response
+        const baseUserData = {
+          id: firebaseUser.uid,
+          firstName: firebaseUser.displayName?.split(' ')[0] || '',
+          lastName: firebaseUser.displayName?.split(' ')[1] || '',
+          email: firebaseUser.email || '',
+          avatar: firebaseUser.photoURL || undefined,
+        }
+        
+        // Set user immediately with basic data
+        setUser(baseUserData)
+        setIsLoading(false)
+        
+        // Then fetch additional profile data in background
         try {
           const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid))
           const userProfile = userDoc.data() as UserProfile | undefined
           
-          setUser({
-            id: firebaseUser.uid,
-            firstName: userProfile?.firstName || firebaseUser.displayName?.split(' ')[0] || '',
-            lastName: userProfile?.lastName || firebaseUser.displayName?.split(' ')[1] || '',
-            email: firebaseUser.email || '',
-            avatar: userProfile?.avatar || firebaseUser.photoURL || undefined,
-          })
-        } catch (error) {
-          // Check if error is due to being offline
-          if (error instanceof Error && error.message.includes('offline')) {
-            console.warn('Currently offline, using cached user data if available');
-          } else {
-            console.error('Error fetching user profile:', error);
+          if (userProfile) {
+            setUser({
+              ...baseUserData,
+              firstName: userProfile.firstName || baseUserData.firstName,
+              lastName: userProfile.lastName || baseUserData.lastName,
+              avatar: userProfile.avatar || baseUserData.avatar,
+            })
           }
-          // Fall back to cached auth data in either case
-          setUser({
-            id: firebaseUser.uid,
-            firstName: firebaseUser.displayName?.split(' ')[0] || '',
-            lastName: firebaseUser.displayName?.split(' ')[1] || '',
-            email: firebaseUser.email || '',
-            avatar: firebaseUser.photoURL || undefined,
-          });
+        } catch (error) {
+          // Silently handle errors - we already have basic user data
+          console.warn('Could not fetch additional profile data:', error)
         }
       } else {
         setUser(null)
+        setIsLoading(false)
       }
-      setIsLoading(false)
     })
 
     return () => unsubscribe()
   }, [])
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true)
       await signInWithEmailAndPassword(auth, email, password)
-      router.push("/dashboard")
+      // Don't wait for navigation, let it happen in background
+      setTimeout(() => router.push("/dashboard"), 100)
       return true
     } catch (error) {
       console.error("Login failed:", error)
@@ -114,22 +121,123 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password)
       const firebaseUser = userCredential.user
 
-      // Update display name
-      await updateProfile(firebaseUser, {
-        displayName: `${userData.firstName} ${userData.lastName}`
-      })
+      // Update display name and save to Firestore in parallel
+      const [, ] = await Promise.all([
+        updateProfile(firebaseUser, {
+          displayName: `${userData.firstName} ${userData.lastName}`
+        }),
+        setDoc(doc(db, 'users', firebaseUser.uid), {
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          createdAt: new Date()
+        } as UserProfile)
+      ])
 
-      // Save additional user data to Firestore
-      await setDoc(doc(db, 'users', firebaseUser.uid), {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        createdAt: new Date()
-      } as UserProfile)
-
-      router.push("/dashboard")
+      // Navigate immediately without waiting
+      setTimeout(() => router.push("/dashboard"), 100)
       return true
     } catch (error) {
       console.error("Signup failed:", error)
+      return false
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const loginWithGoogle = async (): Promise<boolean> => {
+    try {
+      setIsLoading(true)
+      const result = await signInWithPopup(auth, googleProvider)
+      
+      // Create or update user profile in Firestore
+      const userRef = doc(db, 'users', result.user.uid)
+      const userDoc = await getDoc(userRef)
+      
+      if (!userDoc.exists()) {
+        // Extract name from display name
+        const displayName = result.user.displayName || ''
+        const nameParts = displayName.split(' ')
+        const firstName = nameParts[0] || ''
+        const lastName = nameParts.slice(1).join(' ') || ''
+        
+        await setDoc(userRef, {
+          firstName,
+          lastName,
+          avatar: result.user.photoURL,
+          createdAt: new Date()
+        } as UserProfile)
+      }
+      
+      setTimeout(() => router.push("/dashboard"), 100)
+      return true
+    } catch (error) {
+      console.error("Google login failed:", error)
+      return false
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const loginWithFacebook = async (): Promise<boolean> => {
+    try {
+      setIsLoading(true)
+      const result = await signInWithPopup(auth, facebookProvider)
+      
+      // Create or update user profile in Firestore
+      const userRef = doc(db, 'users', result.user.uid)
+      const userDoc = await getDoc(userRef)
+      
+      if (!userDoc.exists()) {
+        const displayName = result.user.displayName || ''
+        const nameParts = displayName.split(' ')
+        const firstName = nameParts[0] || ''
+        const lastName = nameParts.slice(1).join(' ') || ''
+        
+        await setDoc(userRef, {
+          firstName,
+          lastName,
+          avatar: result.user.photoURL,
+          createdAt: new Date()
+        } as UserProfile)
+      }
+      
+      setTimeout(() => router.push("/dashboard"), 100)
+      return true
+    } catch (error) {
+      console.error("Facebook login failed:", error)
+      return false
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const loginWithInstagram = async (): Promise<boolean> => {
+    try {
+      setIsLoading(true)
+      const result = await signInWithPopup(auth, instagramProvider)
+      
+      // Create or update user profile in Firestore
+      const userRef = doc(db, 'users', result.user.uid)
+      const userDoc = await getDoc(userRef)
+      
+      if (!userDoc.exists()) {
+        const displayName = result.user.displayName || result.user.email?.split('@')[0] || ''
+        const nameParts = displayName.split(' ')
+        const firstName = nameParts[0] || ''
+        const lastName = nameParts.slice(1).join(' ') || ''
+        
+        await setDoc(userRef, {
+          firstName,
+          lastName,
+          avatar: result.user.photoURL,
+          createdAt: new Date()
+        } as UserProfile)
+      }
+      
+      setTimeout(() => router.push("/dashboard"), 100)
+      return true
+    } catch (error) {
+      console.error("Instagram login failed:", error)
       return false
     } finally {
       setIsLoading(false)
@@ -146,7 +254,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, isLoading }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      login, 
+      signup, 
+      loginWithGoogle,
+      loginWithFacebook,
+      loginWithInstagram,
+      logout, 
+      isLoading 
+    }}>
       {children}
     </AuthContext.Provider>
   )

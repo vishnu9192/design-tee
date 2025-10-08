@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { SocialLoginButtons } from "@/components/social-login-buttons"
 import { useAuth } from "@/contexts/auth-context"
 
 export default function SignupPage() {
@@ -19,6 +20,7 @@ export default function SignupPage() {
     confirmPassword: "",
   })
   const [error, setError] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { signup, isLoading } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,25 +33,35 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+    setIsSubmitting(true)
 
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
       setError("Please fill in all fields")
+      setIsSubmitting(false)
       return
     }
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match")
+      setIsSubmitting(false)
       return
     }
 
     if (formData.password.length < 6) {
       setError("Password must be at least 6 characters")
+      setIsSubmitting(false)
       return
     }
 
-    const success = await signup(formData)
-    if (!success) {
-      setError("Failed to create account. Please try again.")
+    try {
+      const success = await signup(formData)
+      if (!success) {
+        setError("Signup failed. Please try again.")
+      }
+    } catch {
+      setError("Signup failed. Please try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -60,6 +72,12 @@ export default function SignupPage() {
         <CardDescription className="text-amber-700">Join DesignTee and start creating</CardDescription>
       </CardHeader>
       <CardContent>
+        {/* Social Login Buttons */}
+        <SocialLoginButtons 
+          className="mb-6"
+          onError={setError}
+        />
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -142,8 +160,8 @@ export default function SignupPage() {
 
           {error && <div className="text-red-600 text-sm text-center bg-red-50 p-2 rounded">{error}</div>}
 
-          <Button type="submit" className="w-full bg-amber-800 hover:bg-amber-900 text-white" disabled={isLoading}>
-            {isLoading ? "Creating Account..." : "Create Account"}
+          <Button type="submit" className="w-full bg-amber-800 hover:bg-amber-900 text-white" disabled={isLoading || isSubmitting}>
+            {isLoading || isSubmitting ? "Creating Account..." : "Create Account"}
           </Button>
         </form>
 

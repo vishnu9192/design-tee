@@ -8,26 +8,36 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { SocialLoginButtons } from "@/components/social-login-buttons"
 import { useAuth } from "@/contexts/auth-context"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const { login, isLoading } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+    setIsSubmitting(true)
 
     if (!email || !password) {
       setError("Please fill in all fields")
+      setIsSubmitting(false)
       return
     }
 
-    const success = await login(email, password)
-    if (!success) {
-      setError("Invalid email or password")
+    try {
+      const success = await login(email, password)
+      if (!success) {
+        setError("Invalid email or password")
+      }
+    } catch {
+      setError("Login failed. Please try again.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -38,6 +48,12 @@ export default function LoginPage() {
         <CardDescription className="text-amber-700">Sign in to your DesignTee account</CardDescription>
       </CardHeader>
       <CardContent>
+        {/* Social Login Buttons */}
+        <SocialLoginButtons 
+          className="mb-6"
+          onError={setError}
+        />
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-amber-900">
@@ -71,8 +87,8 @@ export default function LoginPage() {
 
           {error && <div className="text-red-600 text-sm text-center bg-red-50 p-2 rounded">{error}</div>}
 
-          <Button type="submit" className="w-full bg-amber-800 hover:bg-amber-900 text-white" disabled={isLoading}>
-            {isLoading ? "Signing In..." : "Sign In"}
+          <Button type="submit" className="w-full bg-amber-800 hover:bg-amber-900 text-white" disabled={isLoading || isSubmitting}>
+            {isLoading || isSubmitting ? "Signing In..." : "Sign In"}
           </Button>
         </form>
 
