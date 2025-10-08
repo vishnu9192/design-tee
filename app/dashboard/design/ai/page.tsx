@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Sparkles, Wand2, Palette, Download, RefreshCw, Heart } from "lucide-react"
+import { Sparkles, Wand2, Palette, Download, RefreshCw, Heart } from "lucide-react"
 
 export default function AIDesignPage() {
   const [prompt, setPrompt] = useState("")
@@ -107,17 +107,9 @@ export default function AIDesignPage() {
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/design">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Studio
-              </Link>
-            </Button>
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-bold text-foreground">AI Design Generator</h1>
-            </div>
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-primary" />
+            <h1 className="text-xl font-bold text-foreground">AI Design Generator</h1>
           </div>
           <Badge variant="secondary" className="bg-primary/10 text-primary">
             Powered by AI
