@@ -29,8 +29,11 @@ import {
   Eye,
   Star,
   Clock,
-  TrendingUp
+  TrendingUp,
+  Grid3x3,
+  Search
 } from "lucide-react"
+import { designTemplates, templateCategories, getTemplatesByCategory, getRandomTemplates, getRandomDesignImages, type DesignTemplate } from "@/lib/design-templates"
 
 export default function AIDesignPage() {
   const [prompt, setPrompt] = useState("")
@@ -42,6 +45,8 @@ export default function AIDesignPage() {
   const [highQuality, setHighQuality] = useState(true)
   const [activeTab, setActiveTab] = useState("prompts")
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const [selectedTemplate, setSelectedTemplate] = useState<DesignTemplate | null>(null)
+  const [templateCategory, setTemplateCategory] = useState<string>("Solid Colors")
   
   type GeneratedDesign = {
     id: number
@@ -142,14 +147,15 @@ export default function AIDesignPage() {
     if (!prompt.trim()) return
     setIsGenerating(true)
 
-    // Simulate AI generation with multiple results
+    // Simulate AI generation with multiple results using real design images
     setTimeout(() => {
+      const randomImages = getRandomDesignImages(variations[0])
       const newDesigns = Array.from({ length: variations[0] }, (_, index) => ({
         id: Date.now() + index + 1,
         prompt: prompt,
         style: style,
         colors: colors,
-        image: `/ai-generated-design-${index + 1}.${index % 2 === 0 ? 'png' : 'jpg'}`,
+        image: randomImages[index] || '/black-t-shirt.png',
         liked: false,
         rating: Math.floor(Math.random() * 5) + 1,
         generatedAt: new Date().toISOString(),
@@ -164,6 +170,13 @@ export default function AIDesignPage() {
     setGeneratedDesigns((prev) =>
       prev.map((design) => (design.id === id ? { ...design, liked: !design.liked } : design)),
     )
+  }
+
+  const handleTemplateSelect = (template: DesignTemplate) => {
+    setSelectedTemplate(template)
+    setPrompt(template.promptSuggestion)
+    setStyle(template.style)
+    setColors(template.colors.join(','))
   }
 
   return (
@@ -254,18 +267,7 @@ export default function AIDesignPage() {
                     <SelectContent>
                       {colorSchemes.map((scheme) => (
                         <SelectItem key={scheme.value} value={scheme.value}>
-                          <div className="flex items-center gap-2">
-                            <div className="flex gap-1">
-                              {scheme.colors.slice(0, 3).map((color, index) => (
-                                <div
-                                  key={index}
-                                  className="w-3 h-3 rounded-full border border-border"
-                                  style={{ backgroundColor: color }}
-                                />
-                              ))}
-                            </div>
-                            <span>{scheme.label}</span>
-                          </div>
+                          <span>{scheme.label}</span>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -336,6 +338,46 @@ export default function AIDesignPage() {
                 </Button>
 
                 {/* Prompt Inspiration */}
+                <div className="space-y-4">
+                  <Label className="flex items-center gap-2 text-sm font-medium">
+                    <Grid3x3 className="h-4 w-4" />
+                    Design Templates
+                  </Label>
+                  
+                  <Select value={templateCategory} onValueChange={setTemplateCategory}>
+                    <SelectTrigger className="text-sm">
+                      <SelectValue placeholder="Choose template category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templateCategories.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                    {getTemplatesByCategory(templateCategory).slice(0, 8).map((template) => (
+                      <button
+                        key={template.id}
+                        onClick={() => handleTemplateSelect(template)}
+                        className={`p-2 text-xs rounded-lg border-2 transition-all hover:border-primary ${
+                          selectedTemplate?.id === template.id
+                            ? 'border-primary bg-primary/5'
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                      >
+                        <div className="aspect-square bg-muted rounded mb-1 flex items-center justify-center">
+                          <Grid3x3 className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                        <p className="font-medium line-clamp-1">{template.name}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-1">{template.category}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="space-y-4">
                   <Label className="flex items-center gap-2 text-sm font-medium">
                     <Lightbulb className="h-4 w-4" />
@@ -501,11 +543,21 @@ export default function AIDesignPage() {
                             {design.prompt}
                           </p>
                           <div className="flex gap-2">
-                            <Button size="sm" className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600" asChild>
-                              <Link href={`/dashboard/design?ai-design=${design.id}`}>
-                                <Edit3 className="h-4 w-4 mr-1" />
-                                Use Design
-                              </Link>
+                            <Button 
+                              size="sm" 
+                              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                              onClick={() => {
+                                // Store the design in localStorage for the design studio
+                                if (typeof window !== 'undefined') {
+                                  localStorage.setItem('pendingAIDesignImage', design.image)
+                                  localStorage.setItem('pendingAIDesignPrompt', design.prompt)
+                                }
+                                // Navigate to design studio
+                                window.location.href = '/dashboard/design'
+                              }}
+                            >
+                              <Edit3 className="h-4 w-4 mr-1" />
+                              Use Design
                             </Button>
                             <Button size="sm" variant="outline" className="flex-1 bg-transparent">
                               <Layers className="h-4 w-4 mr-1" />
@@ -521,57 +573,117 @@ export default function AIDesignPage() {
             )}
 
             {generatedDesigns.length === 0 && !isGenerating && (
-              <Card className="border-2 border-dashed border-muted-foreground/25">
-                <CardContent className="py-16">
-                  <div className="text-center max-w-2xl mx-auto">
-                    <div className="mb-6">
-                      <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Sparkles className="h-10 w-10 text-white" />
+              <div className="space-y-8">
+                {/* Template Gallery */}
+                <Card className="border-2 border-border">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2">
+                        <Grid3x3 className="h-5 w-5 text-primary" />
+                        Template Gallery
+                      </CardTitle>
+                      <Badge variant="secondary" className="text-xs">
+                        {designTemplates.length} templates
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Start with a template and customize it, or use it as inspiration for your AI-generated design.
+                    </p>
+                    
+                    {templateCategories.map((category) => (
+                      <div key={category} className="space-y-3">
+                        <h4 className="font-semibold text-sm text-foreground">{category}</h4>
+                        <div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {getTemplatesByCategory(category).slice(0, 4).map((template) => (
+                            <div
+                              key={template.id}
+                              className="group cursor-pointer"
+                            >
+                              <div className="relative aspect-square bg-muted rounded-lg overflow-hidden mb-2 border border-border group-hover:border-primary transition-all">
+                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+                                  <Grid3x3 className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleTemplateSelect(template)}
+                                    className="text-xs"
+                                  >
+                                    <Sparkles className="h-3 w-3 mr-1" />
+                                    Use
+                                  </Button>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm line-clamp-1">{template.name}</p>
+                                <p className="text-xs text-muted-foreground line-clamp-1">{template.description}</p>
+                                <Badge variant="outline" className="text-xs mt-1">
+                                  {template.difficulty}
+                                </Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <h3 className="text-2xl font-bold mb-2">Ready to Create Something Amazing?</h3>
-                      <p className="text-muted-foreground mb-8 text-lg">
-                        Describe your ideal t-shirt design and let our AI bring your vision to life with multiple unique variations.
-                      </p>
-                    </div>
-                    
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                      {examplePrompts.slice(3, 6).map((example, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setPrompt(example)}
-                          className="p-4 text-sm bg-gradient-to-br from-muted/50 to-muted/30 hover:from-muted to-muted/70 rounded-xl transition-all hover:scale-105 text-left group border border-border hover:border-primary/30"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                              <Lightbulb className="h-4 w-4 text-primary" />
+                    ))}
+                  </CardContent>
+                </Card>
+
+                {/* Intro Card */}
+                <Card className="border-2 border-dashed border-muted-foreground/25">
+                  <CardContent className="py-16">
+                    <div className="text-center max-w-2xl mx-auto">
+                      <div className="mb-6">
+                        <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Sparkles className="h-10 w-10 text-white" />
+                        </div>
+                        <h3 className="text-2xl font-bold mb-2">Ready to Create Something Amazing?</h3>
+                        <p className="text-muted-foreground mb-8 text-lg">
+                          Describe your ideal t-shirt design and let our AI bring your vision to life with multiple unique variations.
+                        </p>
+                      </div>
+                      
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                        {getRandomTemplates(3).map((template) => (
+                          <button
+                            key={template.id}
+                            onClick={() => handleTemplateSelect(template)}
+                            className="p-4 text-sm bg-gradient-to-br from-muted/50 to-muted/30 hover:from-muted to-muted/70 rounded-xl transition-all hover:scale-105 text-left group border border-border hover:border-primary/30"
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                                <Lightbulb className="h-4 w-4 text-primary" />
+                              </div>
+                              <div>
+                                <p className="line-clamp-3 group-hover:text-primary transition-colors">
+                                  {template.promptSuggestion}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="line-clamp-3 group-hover:text-primary transition-colors">
-                                {example}
-                              </p>
-                            </div>
-                          </div>
-                        </button>
-                      ))}
+                          </button>
+                        ))}
+                      </div>
+                      
+                      <div className="flex justify-center gap-4">
+                        <Badge variant="outline" className="px-4 py-2">
+                          <Zap className="h-4 w-4 mr-2" />
+                          Instant Generation
+                        </Badge>
+                        <Badge variant="outline" className="px-4 py-2">
+                          <Star className="h-4 w-4 mr-2" />
+                          Multiple Variations
+                        </Badge>
+                        <Badge variant="outline" className="px-4 py-2">
+                          <Layers className="h-4 w-4 mr-2" />
+                          Fully Customizable
+                        </Badge>
+                      </div>
                     </div>
-                    
-                    <div className="flex justify-center gap-4">
-                      <Badge variant="outline" className="px-4 py-2">
-                        <Zap className="h-4 w-4 mr-2" />
-                        Instant Generation
-                      </Badge>
-                      <Badge variant="outline" className="px-4 py-2">
-                        <Star className="h-4 w-4 mr-2" />
-                        Multiple Variations
-                      </Badge>
-                      <Badge variant="outline" className="px-4 py-2">
-                        <Layers className="h-4 w-4 mr-2" />
-                        Fully Customizable
-                      </Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useLayoutEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
@@ -74,6 +74,7 @@ export default function DesignStudioPage() {
   const [showGrid, setShowGrid] = useState(false)
   const [history, setHistory] = useState<DesignElement[][]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
+  const [aiDesignImage, setAiDesignImage] = useState<string | null>(null)
   
   // Text tool states
   const [textContent, setTextContent] = useState("")
@@ -97,6 +98,22 @@ export default function DesignStudioPage() {
   // Drag and drop states
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+
+  // Load AI design image from localStorage if available
+  useLayoutEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedImage = localStorage.getItem('pendingAIDesignImage')
+      const storedPrompt = localStorage.getItem('pendingAIDesignPrompt')
+      
+      if (storedImage) {
+        console.log('Loading AI design image:', storedImage)
+        setAiDesignImage(storedImage)
+        // Clear localStorage after loading
+        localStorage.removeItem('pendingAIDesignImage')
+        localStorage.removeItem('pendingAIDesignPrompt')
+      }
+    }
+  }, [])
 
   const productColors = [
     { name: "White", value: "white", hex: "#FFFFFF" },
@@ -1191,31 +1208,45 @@ export default function DesignStudioPage() {
             <div className="relative bg-white rounded-lg shadow-lg overflow-hidden" style={{ transform: `scale(${zoom / 100})` }}>
               {/* Product Preview */}
               <div className="w-96 h-96 relative">
-                <Image
-                  src={
-                    selectedProduct === "tshirt"
-                      ? selectedColor === "white"
-                        ? "/white-t-shirt.png"
-                        : selectedColor === "black"
-                          ? "/black-t-shirt.png"
-                          : selectedColor === "blue"
-                            ? "/blue-t-shirt.png"
-                            : selectedColor === "navy"
-                              ? "/navy-blue-t-shirt.png"
-                              : selectedColor === "red"
-                                ? "/red-t-shirt.png"
-                                : selectedColor === "green"
-                                  ? "/green-t-shirt.png"
-                                  : "/white-t-shirt.png"
-                      : "/white-button-shirt.png"
-                  }
-                  alt="Product preview"
-                  width={384}
-                  height={384}
-                  className="w-full h-full object-contain"
-                  sizes="384px"
-                  priority
-                />
+                {aiDesignImage ? (
+                  // Show AI Design Image
+                  <Image
+                    src={aiDesignImage}
+                    alt="AI Design"
+                    width={384}
+                    height={384}
+                    className="w-full h-full object-contain"
+                    sizes="384px"
+                    priority
+                  />
+                ) : (
+                  // Show regular product selection
+                  <Image
+                    src={
+                      selectedProduct === "tshirt"
+                        ? selectedColor === "white"
+                          ? "/white-t-shirt.png"
+                          : selectedColor === "black"
+                            ? "/black-t-shirt.png"
+                            : selectedColor === "blue"
+                              ? "/blue-t-shirt.png"
+                              : selectedColor === "navy"
+                                ? "/navy-blue-t-shirt.png"
+                                : selectedColor === "red"
+                                  ? "/red-t-shirt.png"
+                                  : selectedColor === "green"
+                                    ? "/green-t-shirt.png"
+                                    : "/white-t-shirt.png"
+                        : "/white-button-shirt.png"
+                    }
+                    alt="Product preview"
+                    width={384}
+                    height={384}
+                    className="w-full h-full object-contain"
+                    sizes="384px"
+                    priority
+                  />
+                )}
                 {/* Design Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div 
