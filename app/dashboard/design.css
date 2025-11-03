@@ -1,0 +1,131 @@
+/* Design Studio Styles */
+
+.design-canvas {
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.canvas-scaler {
+  transform-origin: center;
+  transition: transform 0.2s ease-out;
+}
+
+.design-element {
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  border: 2px solid transparent;
+}
+
+.design-element:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.design-element.selected {
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.design-element.dragging {
+  cursor: grabbing;
+}
+
+.selection-handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: rgb(59, 130, 246);
+  border-radius: 50%;
+}
+
+.selection-handle.top-left {
+  top: -4px;
+  left: -4px;
+}
+
+.selection-handle.top-right {
+  top: -4px;
+  right: -4px;
+}
+
+.selection-handle.bottom-left {
+  bottom: -4px;
+  left: -4px;
+}
+
+.selection-handle.bottom-right {
+  bottom: -4px;
+  right: -4px;
+}
+
+.color-button {
+  width: 100%;
+  height: 48px;
+  border-radius: 8px;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+}
+
+.color-button:hover {
+  transform: scale(1.05);
+}
+
+.color-button.selected {
+  border-color: rgb(59, 130, 246);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.quick-idea-button {
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid;
+  background-color: hsl(var(--background));
+  transition: all 0.15s ease-out;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.quick-idea-button:hover {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.quick-idea-button:active {
+  transform: scale(0.95);
+}
+
+.ai-design-placeholder {
+  background: linear-gradient(135deg, rgb(217, 119, 226) 0%, rgb(236, 72, 153) 100%);
+  opacity: 0.1;
+}
+
+.design-info {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}

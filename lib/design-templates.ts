@@ -283,6 +283,114 @@ export const designTemplates: DesignTemplate[] = [
     promptSuggestion: 'White t-shirt with minimalist text design, clean typography, simple elegant',
     difficulty: 'beginner',
     tags: ['typography', 'minimalist', 'text', 'elegant']
+  },
+  {
+    id: 'template-21',
+    name: 'Minimalist Sunset #1',
+    description: 'Clean minimalist sunset with horizontal lines and circle sun',
+    image: '/templates/minimalist-sunset-1.png',
+    category: 'Nature',
+    style: 'minimalist',
+    colors: ['#FFA500', '#FFD700', '#FF6B35', '#2D3E50'],
+    promptSuggestion: 'Minimalist sunset design with geometric sun circle and clean horizontal lines, warm orange and gold colors, serene aesthetic',
+    difficulty: 'beginner',
+    tags: ['sunset', 'minimalist', 'nature', 'geometric', 'warm']
+  },
+  {
+    id: 'template-22',
+    name: 'Minimalist Sunset #2',
+    description: 'Simple sunset landscape with simplified mountains',
+    image: '/templates/minimalist-sunset-2.png',
+    category: 'Nature',
+    style: 'minimalist',
+    colors: ['#FFA500', '#FF8C3A', '#FFFFFF', '#1A1A1A'],
+    promptSuggestion: 'Minimalist sunset with simplified mountain silhouettes, sun gradient effect, modern clean lines, warm palette',
+    difficulty: 'beginner',
+    tags: ['sunset', 'landscape', 'minimalist', 'mountains', 'nature']
+  },
+  {
+    id: 'template-23',
+    name: 'Minimalist Sunset #3',
+    description: 'Abstract sunset with color blocks',
+    image: '/templates/minimalist-sunset-3.png',
+    category: 'Nature',
+    style: 'abstract',
+    colors: ['#FF7F50', '#FFB347', '#FFC300', '#2D5016'],
+    promptSuggestion: 'Abstract minimalist sunset with bold color blocks, horizontal stripes, contemporary art style',
+    difficulty: 'intermediate',
+    tags: ['sunset', 'abstract', 'color-block', 'modern', 'minimalist']
+  },
+  {
+    id: 'template-24',
+    name: 'Minimalist Sunset #4',
+    description: 'Serene sunset with horizon line and sun',
+    image: '/templates/minimalist-sunset-4.png',
+    category: 'Nature',
+    style: 'minimalist',
+    colors: ['#FFA500', '#FFE4B5', '#87CEEB', '#1F3A70'],
+    promptSuggestion: 'Serene minimalist sunset scene, simple horizon line with gradient sky, peaceful zen aesthetic, vertical composition',
+    difficulty: 'beginner',
+    tags: ['sunset', 'serene', 'zen', 'minimalist', 'sky']
+  },
+  {
+    id: 'template-25',
+    name: 'Purple Vibrant Design',
+    description: 'Purple t-shirt with vibrant geometric design',
+    image: '/templates/purple-vibrant-design.png',
+    category: 'Bold Graphics',
+    style: 'modern',
+    colors: ['#6B46C1', '#FFD700', '#FFFFFF'],
+    promptSuggestion: 'Vibrant purple t-shirt with golden geometric shapes and modern patterns, premium look',
+    difficulty: 'intermediate',
+    tags: ['purple', 'vibrant', 'geometric', 'modern', 'bold']
+  },
+  {
+    id: 'template-26',
+    name: 'Yellow Sunny Design',
+    description: 'Bright yellow t-shirt with cheerful design',
+    image: '/templates/yellow-sunny-design.png',
+    category: 'Bold Graphics',
+    style: 'casual',
+    colors: ['#FFD700', '#FFA500', '#FFFFFF', '#000000'],
+    promptSuggestion: 'Bright yellow t-shirt with orange accents and playful design, cheerful and energetic',
+    difficulty: 'beginner',
+    tags: ['yellow', 'bright', 'cheerful', 'casual', 'sunny']
+  },
+  {
+    id: 'template-27',
+    name: 'Pink Elegant Design',
+    description: 'Soft pink t-shirt with elegant pattern',
+    image: '/templates/pink-elegant-design.png',
+    category: 'Modern',
+    style: 'elegant',
+    colors: ['#EC4899', '#FFFFFF', '#FFC0CB'],
+    promptSuggestion: 'Soft pink t-shirt with elegant white design elements, sophisticated and trendy',
+    difficulty: 'intermediate',
+    tags: ['pink', 'elegant', 'soft', 'trendy', 'modern']
+  },
+  {
+    id: 'template-28',
+    name: 'Orange Bold Design',
+    description: 'Bold orange t-shirt with striking pattern',
+    image: '/templates/orange-bold-design.png',
+    category: 'Bold Graphics',
+    style: 'bold',
+    colors: ['#EA580C', '#FFFFFF', '#000000'],
+    promptSuggestion: 'Bold orange t-shirt with striking white and black design, confident and eye-catching',
+    difficulty: 'intermediate',
+    tags: ['orange', 'bold', 'striking', 'modern', 'vibrant']
+  },
+  {
+    id: 'template-29',
+    name: 'Grey Minimalist Design',
+    description: 'Sophisticated grey t-shirt with minimal design',
+    image: '/templates/grey-minimalist-design.png',
+    category: 'Minimalist',
+    style: 'minimalist',
+    colors: ['#6B7280', '#FFFFFF', '#000000'],
+    promptSuggestion: 'Sophisticated grey t-shirt with minimalist white design, professional and versatile',
+    difficulty: 'beginner',
+    tags: ['grey', 'minimalist', 'professional', 'versatile', 'classic']
   }
 ];
 

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,8 +29,7 @@ import {
   Star,
   Clock,
   TrendingUp,
-  Grid3x3,
-  Search
+  Grid3x3
 } from "lucide-react"
 import { designTemplates, templateCategories, getTemplatesByCategory, getRandomTemplates, getRandomDesignImages, type DesignTemplate } from "@/lib/design-templates"
 

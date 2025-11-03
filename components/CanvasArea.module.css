@@ -1,0 +1,297 @@
+.canvas {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.canvasToolbar {
+  border-bottom: 1px solid hsl(var(--border));
+  background-color: hsl(var(--card) / 0.3);
+  padding: 1rem;
+}
+
+.toolbarContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.canvasContainer {
+  flex: 1;
+  background-color: hsl(var(--muted) / 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+}
+
+.gridBackground {
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.canvasWrapper {
+  position: relative;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.canvasPreview {
+  width: 28rem;
+  height: 28rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.designOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.designCanvas {
+  width: 18rem;
+  height: 18rem;
+  border: 2px dashed hsl(var(--primary) / 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+.designCanvas:hover {
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+:root {
+  --canvas-zoom: 1;
+  --element-x: 0px;
+  --element-y: 0px;
+  --element-width: 0px;
+  --element-height: 0px;
+  --element-rotation: 0deg;
+  --text-size: 16px;
+  --text-family: arial;
+  --text-weight: normal;
+  --text-style: normal;
+  --text-align: center;
+  --text-color: #000000;
+  --text-decoration: none;
+  --bg-color: #FFFFFF;
+  --border-color: #000000;
+  --border-width: 2px;
+  --triangle-size: 0px;
+  --triangle-height: 0px;
+  --triangle-color: #FFFFFF;
+}
+
+.canvasWrapper {
+  transform: scale(var(--canvas-zoom));
+}
+
+.designElement {
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+  left: var(--element-x);
+  top: var(--element-y);
+  width: var(--element-width);
+  height: var(--element-height);
+  transform: rotate(var(--element-rotation));
+}
+
+.designElement:hover {
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.designElement.selected {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+}
+
+.designElement.dragging {
+  cursor: grabbing;
+}
+
+.textElement {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-words;
+  font-size: var(--text-size);
+  font-family: var(--text-family);
+  font-weight: var(--text-weight);
+  font-style: var(--text-style);
+  text-align: var(--text-align);
+  color: var(--text-color);
+  text-decoration: var(--text-decoration);
+}
+
+.shapeElement {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shapeRectangle {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+  border: var(--border-width) solid var(--border-color);
+}
+
+.shapeCircle {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--bg-color);
+  border: var(--border-width) solid var(--border-color);
+}
+
+.shapeTriangle {
+  width: 0;
+  height: 0;
+  border-left: var(--triangle-size) solid transparent;
+  border-right: var(--triangle-size) solid transparent;
+  border-bottom: var(--triangle-height) solid var(--triangle-color);
+}
+
+.aiGeneratedElement {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, hsl(var(--purple-100, 280 90% 85%)) 0%, hsl(var(--pink-100, 335 90% 88%)) 100%);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid hsl(var(--purple-200, 280 60% 80%));
+  overflow: hidden;
+  position: relative;
+}
+
+.imageElement {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+  position: relative;
+}
+
+.selectionHandle {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: hsl(var(--primary));
+  border-radius: 9999px;
+}
+
+.handleTopLeft {
+  top: -0.25rem;
+  left: -0.25rem;
+}
+
+.handleTopRight {
+  top: -0.25rem;
+  right: -0.25rem;
+}
+
+.handleBottomLeft {
+  bottom: -0.25rem;
+  left: -0.25rem;
+}
+
+.handleBottomRight {
+  bottom: -0.25rem;
+  right: -0.25rem;
+}
+
+.layerCounter {
+  position: absolute;
+  top: -1.5rem;
+  right: -1.5rem;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.canvasInfo {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.canvasZoom {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.emptyState {
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+}
+
+.emptyStateIcon {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 auto 0.5rem;
+}
+
+.emptyStateText {
+  font-size: 0.875rem;
+}
+
+.emptyStateSubtext {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
