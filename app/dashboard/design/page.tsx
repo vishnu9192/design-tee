@@ -6,7 +6,7 @@ import { CanvasArea } from "@/components/CanvasArea"
 import { LeftSidebar } from "@/components/LeftSidebar"
 import { RightSidebar } from "@/components/RightSidebar"
 import { DesignHeader } from "@/components/DesignHeader"
-import { productColors } from "@/lib/design-helpers"
+import { productColors } from "@/utils/designConstants"
 
 export default function DesignPage() {
   // Canvas state

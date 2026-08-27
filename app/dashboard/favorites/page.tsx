@@ -16,104 +16,24 @@ export default function FavoritesPage() {
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [sortBy, setSortBy] = useState("name-asc")
 
-  const favorites = [
-    {
-      id: 1,
-      name: "Vintage Sunset Tee",
-      price: 29.99,
-      originalPrice: 39.99,
-      image: "/vintage-sunset-t-shirt.jpg",
-      category: "T-Shirts",
-      rating: 4.8,
-      reviews: 124,
-      inStock: true,
-      colors: ["Orange", "Pink", "Purple"],
-      sizes: ["S", "M", "L", "XL"],
-      dateAdded: "2024-01-15",
-      designer: "RetroVibes",
-      tags: ["Vintage", "Sunset", "Colorful"]
-    },
-    {
-      id: 2,
-      name: "Minimalist Logo Hoodie",
-      price: 59.99,
-      originalPrice: null,
-      image: "/minimalist-hoodie.jpg",
-      category: "Hoodies",
-      rating: 4.9,
-      reviews: 89,
-      inStock: true,
-      colors: ["Black", "White", "Gray"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      dateAdded: "2024-01-12",
-      designer: "CleanDesigns",
-      tags: ["Minimalist", "Logo", "Simple"]
-    },
-    {
-      id: 3,
-      name: "Urban Street Art Tank",
-      price: 24.99,
-      originalPrice: 34.99,
-      image: "/urban-street-art-tank-top.jpg",
-      category: "Tank Tops",
-      rating: 4.6,
-      reviews: 67,
-      inStock: false,
-      colors: ["Black", "White"],
-      sizes: ["S", "M", "L"],
-      dateAdded: "2024-01-08",
-      designer: "StreetArt Co",
-      tags: ["Urban", "Street Art", "Graffiti"]
-    },
-    {
-      id: 4,
-      name: "Custom Typography Tee",
-      price: 32.99,
-      originalPrice: null,
-      image: "/typography-t-shirt-design.jpg",
-      category: "T-Shirts",
-      rating: 4.7,
-      reviews: 156,
-      inStock: true,
-      colors: ["Navy", "Charcoal", "White"],
-      sizes: ["XS", "S", "M", "L", "XL"],
-      dateAdded: "2024-01-10",
-      designer: "TypeMaster",
-      tags: ["Typography", "Custom", "Text"]
-    },
-    {
-      id: 5,
-      name: "Nature Pattern Design",
-      price: 35.99,
-      originalPrice: 45.99,
-      image: "/nature-pattern-design.jpg",
-      category: "T-Shirts",
-      rating: 4.5,
-      reviews: 92,
-      inStock: true,
-      colors: ["Green", "Brown", "Beige"],
-      sizes: ["S", "M", "L", "XL"],
-      dateAdded: "2024-01-05",
-      designer: "EcoDesigns",
-      tags: ["Nature", "Pattern", "Organic"]
-    },
-    {
-      id: 6,
-      name: "Classic Button Shirt",
-      price: 49.99,
-      originalPrice: null,
-      image: "/white-button-shirt.png",
-      category: "Button Shirts",
-      rating: 4.4,
-      reviews: 203,
-      inStock: true,
-      colors: ["White", "Blue", "Gray"],
-      sizes: ["S", "M", "L", "XL", "XXL"],
-      dateAdded: "2024-01-03",
-      designer: "Classic Wear",
-      tags: ["Classic", "Formal", "Button"]
-    }
-  ]
+  // TODO: Replace with real favorites from Firebase
+  interface FavoriteItem {
+    id: number
+    name: string
+    price: number
+    originalPrice?: number | null
+    image: string
+    category: string
+    rating: number
+    reviews: number
+    inStock: boolean
+    colors: string[]
+    sizes: string[]
+    dateAdded: string
+    designer: string
+    tags: string[]
+  }
+  const favorites: FavoriteItem[] = []
 
   // Filter and sort logic
   const filteredFavorites = favorites.filter((item) => {

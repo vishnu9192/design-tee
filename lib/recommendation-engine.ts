@@ -38,83 +38,8 @@ export class RecommendationEngine {
   private userPreferences: Map<string, UserPreferences> = new Map();
 
   constructor() {
-    this.loadMockData();
-  }
-
-  private loadMockData() {
-    // Mock products data
-    this.products = [
-      {
-        id: '1',
-        name: 'Classic White T-Shirt',
-        category: 'tshirt',
-        price: 25.99,
-        color: 'white',
-        size: ['S', 'M', 'L', 'XL'],
-        brand: 'ComfortWear',
-        style: 'casual',
-        image: '/white-t-shirt.png',
-        tags: ['basic', 'cotton', 'comfortable'],
-        rating: 4.5,
-        salesCount: 150
-      },
-      {
-        id: '2',
-        name: 'Navy Blue Button Shirt',
-        category: 'shirt',
-        price: 49.99,
-        color: 'navy',
-        size: ['S', 'M', 'L', 'XL'],
-        brand: 'FormalStyle',
-        style: 'formal',
-        image: '/navy-blue-button-shirt.jpg',
-        tags: ['formal', 'business', 'cotton'],
-        rating: 4.7,
-        salesCount: 89
-      },
-      {
-        id: '3',
-        name: 'Vintage Sunset T-Shirt',
-        category: 'tshirt',
-        price: 32.99,
-        color: 'orange',
-        size: ['S', 'M', 'L'],
-        brand: 'RetroVibes',
-        style: 'vintage',
-        image: '/vintage-sunset-t-shirt.jpg',
-        tags: ['vintage', 'graphic', 'sunset'],
-        rating: 4.3,
-        salesCount: 76
-      },
-      {
-        id: '4',
-        name: 'Forest Green Button Shirt',
-        category: 'shirt',
-        price: 55.99,
-        color: 'green',
-        size: ['M', 'L', 'XL'],
-        brand: 'NatureWear',
-        style: 'casual',
-        image: '/forest-green-button-shirt.jpg',
-        tags: ['casual', 'outdoor', 'eco-friendly'],
-        rating: 4.6,
-        salesCount: 45
-      },
-      {
-        id: '5',
-        name: 'Urban Street Art T-Shirt',
-        category: 'tshirt',
-        price: 28.99,
-        color: 'black',
-        size: ['S', 'M', 'L', 'XL'],
-        brand: 'StreetStyle',
-        style: 'streetwear',
-        image: '/urban-street-art-tank-top.jpg',
-        tags: ['streetwear', 'graphic', 'urban'],
-        rating: 4.4,
-        salesCount: 112
-      }
-    ];
+    // Products will be loaded from database via API calls
+    // No mock data in production
   }
 
   // Record user interaction

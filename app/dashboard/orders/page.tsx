@@ -15,78 +15,20 @@ export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [sortBy, setSortBy] = useState("date-desc")
 
-  const orders = [
-    {
-      id: "ORD-001",
-      date: "2024-01-15",
-      status: "delivered",
-      total: 89.97,
-      items: 3,
-      trackingNumber: "TRK123456789",
-      estimatedDelivery: "2024-01-18",
-      actualDelivery: "2024-01-17",
-      products: [
-        { name: "Vintage Sunset Tee", image: "/vintage-sunset-t-shirt.jpg", quantity: 2, price: 29.99 },
-        { name: "Urban Street Tank", image: "/urban-street-art-tank-top.jpg", quantity: 1, price: 29.99 }
-      ],
-      shippingAddress: "123 Main St, City, State 12345"
-    },
-    {
-      id: "ORD-002", 
-      date: "2024-01-10",
-      status: "processing",
-      total: 54.99,
-      items: 2,
-      trackingNumber: "TRK987654321",
-      estimatedDelivery: "2024-01-20",
-      products: [
-        { name: "Minimalist Design Tee", image: "/stylish-t-shirt-design-.jpg", quantity: 2, price: 27.49 }
-      ],
-      shippingAddress: "456 Oak Ave, Town, State 67890"
-    },
-    {
-      id: "ORD-003",
-      date: "2024-01-05", 
-      status: "shipped",
-      total: 129.99,
-      items: 4,
-      trackingNumber: "TRK456789123",
-      estimatedDelivery: "2024-01-15",
-      products: [
-        { name: "Typography Design", image: "/typography-t-shirt-design.jpg", quantity: 2, price: 32.99 },
-        { name: "Nature Pattern Tee", image: "/nature-pattern-design.jpg", quantity: 2, price: 31.99 }
-      ],
-      shippingAddress: "789 Pine Rd, Village, State 13579"
-    },
-    {
-      id: "ORD-004",
-      date: "2024-01-01",
-      status: "cancelled", 
-      total: 39.99,
-      items: 1,
-      trackingNumber: null,
-      estimatedDelivery: null,
-      products: [
-        { name: "Custom Design Hoodie", image: "/minimalist-hoodie.jpg", quantity: 1, price: 39.99 }
-      ],
-      shippingAddress: "321 Elm St, City, State 24680"
-    },
-    {
-      id: "ORD-005",
-      date: "2023-12-28",
-      status: "delivered",
-      total: 74.98,
-      items: 2,
-      trackingNumber: "TRK789123456", 
-      estimatedDelivery: "2024-01-03",
-      actualDelivery: "2024-01-02",
-      products: [
-        { name: "Black Button Shirt", image: "/black-button-shirt.jpg", quantity: 1, price: 39.99 },
-        { name: "White Classic Tee", image: "/white-t-shirt.png", quantity: 1, price: 34.99 }
-      ],
-      shippingAddress: "654 Maple Dr, Suburb, State 97531"
-    }
-  ]
+  // TODO: Replace with real orders from Firebase
+  interface OrderItem {
+    id: string
+    date: string
+    status: string
+    total: number
+    items: number
+    trackingNumber?: string | null
+    estimatedDelivery?: string | null
+    actualDelivery?: string | null
+    products: Array<{name: string; image: string; quantity: number; price: number}>
+    shippingAddress: string
+  }
+  const orders: OrderItem[] = []
 
   const getStatusIcon = (status: string) => {
     switch (status) {

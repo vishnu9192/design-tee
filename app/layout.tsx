@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DesignTee - Your Ultimate T-Shirt Design Platform",
+  title: "Smart Dress Designer - Create Your Perfect Custom Gown",
 };
 
 export default function RootLayout({

@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Square, Circle, Triangle, Type, ImageIcon } from "lucide-react"
 import Image from "next/image"
-import { DesignElement, designTemplates } from "@/lib/design-helpers"
+import { DesignElement } from "@/lib/design-helpers"
+import { designTemplates } from "@/utils/designConstants"
 import { AIDesignGenerator } from "./AIDesignGenerator"
 
 interface LeftSidebarProps {

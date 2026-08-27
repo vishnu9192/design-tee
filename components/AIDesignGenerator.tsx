@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Zap, Lightbulb, Layers, Eye, Copy, Trash2, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { DesignElement, aiPromptSuggestions } from "@/lib/design-helpers"
+import { DesignElement } from "@/lib/design-helpers"
+import { aiPromptSuggestions } from "@/utils/designConstants"
 
 interface AIDesignGeneratorProps {
   aiPrompt: string

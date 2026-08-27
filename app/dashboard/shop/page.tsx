@@ -12,10 +12,10 @@ import {
   Grid3X3, 
   List, 
   Search, 
-  Heart, 
-  ShoppingCart, 
-  Star, 
-  TrendingUp, 
+  Heart,
+  ShoppingCart,
+  Star,
+  TrendingUp,
   Zap,
   Palette,
   Sparkles,
@@ -26,96 +26,33 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 
-const categories = [
-  {
-    id: "tshirts",
-    name: "T-Shirts",
-    description: "Classic comfort meets style",
-    image: "/white-t-shirt-on-hanger.jpg",
-    count: 24,
-    featured: true,
-    colors: ["#000000", "#FFFFFF", "#1E40AF", "#DC2626"]
-  },
-  {
-    id: "shirts",
-    name: "Button Shirts",
-    description: "Elevated casual wear",
-    image: "/casual-button-shirt-on-hanger.jpg",
-    count: 18,
-    featured: false,
-    colors: ["#1F2937", "#FFFFFF", "#3B82F6", "#059669"]
-  },
-  {
-    id: "hoodies",
-    name: "Hoodies",
-    description: "Cozy streetwear essentials",
-    image: "/minimalist-hoodie.jpg",
-    count: 12,
-    featured: true,
-    colors: ["#374151", "#F9FAFB", "#7C3AED", "#F59E0B"]
-  },
-  {
-    id: "tank-tops",
-    name: "Tank Tops",
-    description: "Perfect for summer vibes",
-    image: "/urban-street-art-tank-top.jpg",
-    count: 8,
-    featured: false,
-    colors: ["#000000", "#FFFFFF", "#EF4444", "#10B981"]
-  }
-]
+// TODO: Replace with real categories from database
+interface Category {
+  id: string
+  name: string
+  description: string
+  image: string
+  count: number
+  featured: boolean
+  colors: string[]
+}
+const categories: Category[] = []
 
-const featuredProducts = [
-  {
-    id: 1,
-    name: "Urban Street Art Tee",
-    price: 29.99,
-    originalPrice: 39.99,
-    rating: 4.8,
-    reviews: 124,
-    image: "/urban-street-art.png",
-    isNew: true,
-    isBestseller: false,
-    colors: 5,
-    category: "T-Shirts"
-  },
-  {
-    id: 2,
-    name: "Vintage Sunset Design",
-    price: 32.99,
-    rating: 4.9,
-    reviews: 89,
-    image: "/vintage-sunset-t-shirt.jpg",
-    isNew: false,
-    isBestseller: true,
-    colors: 3,
-    category: "T-Shirts"
-  },
-  {
-    id: 3,
-    name: "Minimalist Typography",
-    price: 27.99,
-    rating: 4.7,
-    reviews: 156,
-    image: "/typography-t-shirt-design.jpg",
-    isNew: false,
-    isBestseller: false,
-    colors: 4,
-    category: "T-Shirts"
-  },
-  {
-    id: 4,
-    name: "Nature Pattern Tee",
-    price: 34.99,
-    rating: 4.6,
-    reviews: 67,
-    image: "/nature-pattern-design.jpg",
-    isNew: true,
-    isBestseller: false,
-    colors: 6,
-    category: "T-Shirts"
-  }
-]
+// TODO: Replace with real featured products from database
+interface Product {
+  id: number
+  name: string
+  price: number
+  originalPrice?: number | null
+  rating: number
+  reviews: number
+  image: string
+  isNew: boolean
+  isBestseller: boolean
+  colors: number
+  category: string
+}
+const featuredProducts: Product[] = []
 
 export default function ShopPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
